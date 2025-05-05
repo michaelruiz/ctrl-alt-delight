@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.h-64 {
+    height: 16rem;
+  }
+
+input {
+  caret-color: #ff69b4; /* Pink color for the cursor */
+  caret-width: 3px; /* Make the cursor thicker/wider */
+  animation: none; /* Remove blinking effect from the text */
+}
+
+@keyframes blink {
+  from, to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes cyberpunk-glow {
+  0% {
+    text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 40px #ff69b4;
+  }
+  50% {
+    text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 30px #ff69b4, 0 0 50px #ff69b4;
+  }
+  100% {
+    text-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 40px #ff69b4;
+  }
+}
+
+.cyberpunk-effect {
+  color: #ff69b4;
+  animation: cyberpunk-glow 1.5s infinite alternate;
+}
