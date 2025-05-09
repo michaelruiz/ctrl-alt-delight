@@ -108,14 +108,13 @@ const SnakeGame = ({ onExit }) => {
 
         newSnake.push(newHead);
 
-
         if (newHead[0] === food[0] && newHead[1] === food[1]) {
           playFoodSound(); 
           if (foodValue >= 9) {
             setLevel((prevLevel) => prevLevel + 1); 
             setFoodValue(1); 
           } else {
-            setFoodValue((prevValue) => prevValue + 1); 
+            setFoodValue(foodValue + 1);
           }
           setFood([Math.floor(Math.random() * gridSize), Math.floor(Math.random() * gridSize)]);
         } else {
@@ -146,7 +145,30 @@ const SnakeGame = ({ onExit }) => {
       <h1 style={{ fontFamily: 'Courier New, monospace' }}>Nibbles Game - Level {level}</h1>
       {gameOver ? (
         <>
-          <p style={{ fontFamily: 'Courier New, monospace' }}>Game Over! Thank you for playing.</p>
+          <p style={{ fontFamily: 'Courier New, monospace' }}>Game Over! Thank you for playing Nibbles by Michael.</p>
+          <button
+            onClick={() => {
+              setSnake([[5, 5]]); 
+              setFood([Math.floor(Math.random() * gridSize), Math.floor(Math.random() * gridSize)]); 
+              setDirection('RIGHT'); 
+              setGameOver(false); 
+              setLevel(1);
+              setFoodValue(1); 
+              setWalls([]); 
+              setSpeed(200); 
+            }}
+            style={{
+              backgroundColor: 'white',
+              color: 'black',
+              border: '1px solid black',
+              padding: '5px 10px',
+              cursor: 'pointer',
+              fontFamily: 'Courier New, monospace',
+              marginRight: '10px',
+            }}
+          >
+            Play Again
+          </button>
           <button
             onClick={onExit}
             style={{

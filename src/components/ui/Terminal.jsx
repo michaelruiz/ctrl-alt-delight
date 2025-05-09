@@ -7,8 +7,8 @@ import SnakeGame from './SnakeGame';
 export default function Terminal({ onExit }) {
   const [lines, setLines] = useState([]);
   const [input, setInput] = useState("");
-  const [isDoomActive, setIsDoomActive] = useState(false); // Track if DOOM is active
-  const [isSnakeActive, setIsSnakeActive] = useState(false); // Track if Snake game is active
+  const [isDoomActive, setIsDoomActive] = useState(false); 
+  const [isSnakeActive, setIsSnakeActive] = useState(false); 
   const inputRef = useRef(null);
   const [commandHistory, setCommandHistory] = useState([]); 
   const [historyIndex, setHistoryIndex] = useState(-1); 
@@ -218,8 +218,8 @@ export default function Terminal({ onExit }) {
         return;
       }
 
-      if (cmd === 'nibbles.bat') {
-        console.log('Activating Snake game...');
+      if (cmd === 'nibbles.bas') {
+        console.log('Activating Nibbles game...');
         setIsSnakeActive(true);
         return;
       }
