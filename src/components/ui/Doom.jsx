@@ -1,47 +1,40 @@
-// import { useEffect, useRef } from 'react';
-// import Dos from 'js-dos'; // Use default export
+import { useEffect, useRef } from 'react';
+import { V86Starter } from 'v86';
 
-// export default function Doom() {
-//   const canvasRef = useRef(null);
+export default function Doom({ onExit }) {
+  const emulatorRef = useRef(null);
 
-//   useEffect(() => {
-//     let dos;
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      console.warn('v86 can only be initialized in the browser environment.');
+      return;
+    }
 
-//     async function loadDos() {
-//       try {
-//         console.log('Initializing Dos instance...');
-//         dos = Dos(canvasRef.current); // Initialize Dos instance
-//         console.log('Dos instance initialized successfully.');
+    const emulator = new V86Starter({
+      wasm_path: '/node_modules/v86/build/v86.wasm',
+      memory_size: 32 * 1024 * 1024, // 32 MB
+      vga_memory_size: 2 * 1024 * 1024, // 2 MB
+      screen_container: emulatorRef.current,
+      bios: { url: '/node_modules/v86/bios/seabios.bin' },
+      vga_bios: { url: '/node_modules/v86/bios/vgabios.bin' },
+      fda: { url: '/doom/DOOM.WAD' },
+      autostart: true,
+    });
 
-//         const wadPath = '/doom/DOOM.WAD'; // Ensure the path is correct
-//         console.log(`Running DOOM.WAD from path: ${wadPath}`);
-//         try {
-//           Dos.run(wadPath); // Run the WAD file
-//           console.log('DOOM.WAD is running.');
-//         } catch (error) {
-//           console.error('Error while running DOOM.WAD:', error);
-//         }
-//       } catch (error) {
-//         console.error('Failed to initialize Dos or run DOOM.WAD:', error);
-//       }
-//     }
+    return () => {
+      emulator.stop();
+    };
+  }, []);
 
-//     loadDos();
-
-//     return () => {
-//       if (dos && typeof dos.stop === 'function') {
-//         console.log('Stopping Dos instance...');
-//         dos.stop();
-//         console.log('Dos instance stopped.');
-//       } else {
-//         console.log('Dos instance was not initialized or already stopped.');
-//       }
-//     };
-//   }, []);
-
-//   return (
-//     <div style={{ width: '100%', height: '100%' }}>
-//       <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }}></canvas>
-//     </div>
-//   );
-// }
+  return (
+    <div style={{ width: '100%', height: '100%' }}>
+      <div ref={emulatorRef} style={{ width: '100%', height: '100%' }}></div>
+      <button
+        onClick={onExit}
+        style={{ position: 'absolute', top: 10, right: 10, zIndex: 1000 }}
+      >
+        Exit
+      </button>
+    </div>
+  );
+}

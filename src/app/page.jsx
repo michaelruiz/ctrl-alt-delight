@@ -5,6 +5,9 @@ import { useEffect, useState, useRef } from 'react';
 import { Button } from '../components/ui/Button';
 import Terminal from '../components/ui/Terminal';
 import { useSound } from 'use-sound'; // Add sound effect library
+import dynamic from 'next/dynamic';
+
+const Doom = dynamic(() => import('../components/ui/Doom'), { ssr: false });
 
 export default function Home() {
   const [logs, setLogs] = useState([]);
@@ -88,6 +91,10 @@ export default function Home() {
         </div>
       </div>
       {terminalActive && <Terminal onExit={() => setTerminalActive(false)} />}
+      <main>
+        <h1>Welcome to Ctrl-Alt-Delight</h1>
+        <Doom />
+      </main>
     </>
   );
 }

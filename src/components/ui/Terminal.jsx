@@ -3,11 +3,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './Button';
 import Doom from './Doom';
+import SnakeGame from './SnakeGame';
 
 export default function Terminal({ onExit }) {
   const [lines, setLines] = useState([]);
   const [input, setInput] = useState("");
   const [isDoomActive, setIsDoomActive] = useState(false); // Track if DOOM is active
+  const [isSnakeActive, setIsSnakeActive] = useState(false); // Track if Snake game is active
   const inputRef = useRef(null);
   const [commandHistory, setCommandHistory] = useState([]); // Store previous commands
   const [historyIndex, setHistoryIndex] = useState(-1); // Track the current position in history
@@ -203,6 +205,7 @@ export default function Terminal({ onExit }) {
 
     if (e.key === 'Enter') {
       const cmd = input.trim().toLowerCase();
+      console.log('Command entered:', cmd);
       setLines((prev) => [...prev, `> ${cmd}`]);
       setCommandHistory((prev) => [...prev, cmd]); // Add command to history
       setHistoryIndex(-1); // Reset history index
@@ -231,6 +234,17 @@ export default function Terminal({ onExit }) {
         return;
       }
 
+      if (cmd === 'nibbles.bat') {
+        console.log('Activating Snake game...');
+        setIsSnakeActive(true);
+        return;
+      }
+      if (cmd === 'doom.bat') {
+        console.log('Activating Doom game...');
+        setIsDoomActive(true);
+        return;
+      }
+
       const output = commands[cmd] ? commands[cmd] : [`Unknown command: ${cmd}`, "Type 'help' for commands."];
       setLines((prev) => {
         const updatedLines = [...prev, ...output];
@@ -246,7 +260,19 @@ export default function Terminal({ onExit }) {
   };
 
   if (isDoomActive) {
-    return <Doom/>; // Render DOOM component directly
+    return (
+      <div className="fixed inset-0 bg-black text-green-400 font-mono p-6 flex flex-col z-50">
+        <Doom onExit={() => setIsDoomActive(false)} />
+      </div>
+    );
+  }
+
+  if (isSnakeActive) {
+    return (
+      <div className="fixed inset-0 bg-black text-green-400 font-mono p-6 flex flex-col z-50">
+        <SnakeGame onExit={() => setIsSnakeActive(false)} />
+      </div>
+    );
   }
 
   return (
