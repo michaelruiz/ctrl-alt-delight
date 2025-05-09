@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './Button';
-import Doom from './Doom';
 import SnakeGame from './SnakeGame';
 
 export default function Terminal({ onExit }) {
@@ -11,9 +10,9 @@ export default function Terminal({ onExit }) {
   const [isDoomActive, setIsDoomActive] = useState(false); // Track if DOOM is active
   const [isSnakeActive, setIsSnakeActive] = useState(false); // Track if Snake game is active
   const inputRef = useRef(null);
-  const [commandHistory, setCommandHistory] = useState([]); // Store previous commands
-  const [historyIndex, setHistoryIndex] = useState(-1); // Track the current position in history
-  const [theme, setTheme] = useState('default'); // Add state for theme
+  const [commandHistory, setCommandHistory] = useState([]); 
+  const [historyIndex, setHistoryIndex] = useState(-1); 
+  const [theme, setTheme] = useState('default'); 
 
   const themes = {
     default: 'bg-black text-green-400',
@@ -31,18 +30,17 @@ export default function Terminal({ onExit }) {
   useEffect(() => {
     if (!isDoomActive) {
       inputRef.current?.focus();
-      setLines([]); // Clear lines to ensure no duplicates
-
-      // Use a timeout to ensure the state is cleared before starting the scroll
+      setLines([]); 
+      
       const timeout = setTimeout(() => {
-        scrollAsciiArt(); // Trigger the scrolling ASCII art on terminal load
+        scrollAsciiArt(); 
       }, 0);
 
-      return () => clearTimeout(timeout); // Cleanup timeout on unmount
+      return () => clearTimeout(timeout); 
     }
   }, [isDoomActive]);
-  const maxWidth = 60; // Define the maximum width of the box
-  const border = '═'.repeat(maxWidth); // Create the border dynamically
+  const maxWidth = 60; 
+  const border = '═'.repeat(maxWidth); 
   
   const commands = {
     help: [
@@ -119,12 +117,12 @@ export default function Terminal({ onExit }) {
       '',
     ];
 
-    let index = 0; // Start from the first line
+    let index = 0; 
     const interval = setInterval(() => {
       if (index < asciiArt.length) {
         setLines((prev) => {
           const newLines = [...prev, asciiArt[index]];
-          // Verify the last line added matches the expected line
+          
           if (newLines[newLines.length - 1] !== asciiArt[index]) {
             console.error(`Line mismatch: Expected "${asciiArt[index]}", but got "${newLines[newLines.length - 1]}"`);
           }
@@ -133,10 +131,10 @@ export default function Terminal({ onExit }) {
         index++;
       } else {
         clearInterval(interval);
-        // Display help commands after the ASCII art finishes scrolling
+        
         setLines((prev) => [...prev, ...commands.help]);
       }
-    }, 300); // Adjust the speed of scrolling here
+    }, 300); 
   };
 
   useEffect(() => {
@@ -146,7 +144,7 @@ export default function Terminal({ onExit }) {
         if (terminalInput) {
           terminalInput.classList.add('cyberpunk-effect');
         }
-      }, 3000); // Trigger effect after help commands print
+      }, 3000); 
 
       return () => clearTimeout(timeout);
     }
@@ -164,23 +162,10 @@ export default function Terminal({ onExit }) {
     };
   }, []);
 
-  useEffect(() => {
-    const savedState = JSON.parse(localStorage.getItem('terminalState'));
-    if (savedState) {
-      setLines(savedState.lines || []);
-      setCommandHistory(savedState.commandHistory || []);
-    }
-  }, []);
-
-  useEffect(() => {
-    const terminalState = { lines, commandHistory };
-    localStorage.setItem('terminalState', JSON.stringify(terminalState));
-  }, [lines, commandHistory]);
-
   const handleInputChange = (e) => setInput(e.target.value);
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowUp') {
-      // Navigate up in the command history
+      
       if (commandHistory.length > 0 && historyIndex > 0) {
         setHistoryIndex((prevIndex) => prevIndex - 1);
         setInput(commandHistory[historyIndex - 1]);
@@ -192,7 +177,7 @@ export default function Terminal({ onExit }) {
     }
 
     if (e.key === 'ArrowDown') {
-      // Navigate down in the command history
+      
       if (historyIndex < commandHistory.length - 1 && historyIndex !== -1) {
         setHistoryIndex((prevIndex) => prevIndex + 1);
         setInput(commandHistory[historyIndex + 1]);
@@ -205,10 +190,9 @@ export default function Terminal({ onExit }) {
 
     if (e.key === 'Enter') {
       const cmd = input.trim().toLowerCase();
-      console.log('Command entered:', cmd);
       setLines((prev) => [...prev, `> ${cmd}`]);
-      setCommandHistory((prev) => [...prev, cmd]); // Add command to history
-      setHistoryIndex(-1); // Reset history index
+      setCommandHistory((prev) => [...prev, cmd]); 
+      setHistoryIndex(-1); 
       setInput('');
 
       if (cmd === 'exit') {
@@ -226,8 +210,8 @@ export default function Terminal({ onExit }) {
       if (cmd === 'download resume') {
         setLines((prev) => [...prev, 'Downloading résumé...']);
         const link = document.createElement('a');
-        link.href = '/resume.pdf'; // Path to the résumé file in the public folder
-        link.download = 'Michael_Ruiz_Resume.pdf'; // Suggested file name
+        link.href = '/resume.pdf'; 
+        link.download = 'Michael_Ruiz_Resume.pdf'; 
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -239,11 +223,7 @@ export default function Terminal({ onExit }) {
         setIsSnakeActive(true);
         return;
       }
-      if (cmd === 'doom.bat') {
-        console.log('Activating Doom game...');
-        setIsDoomActive(true);
-        return;
-      }
+
 
       const output = commands[cmd] ? commands[cmd] : [`Unknown command: ${cmd}`, "Type 'help' for commands."];
       setLines((prev) => {
@@ -259,13 +239,7 @@ export default function Terminal({ onExit }) {
     }
   };
 
-  if (isDoomActive) {
-    return (
-      <div className="fixed inset-0 bg-black text-green-400 font-mono p-6 flex flex-col z-50">
-        <Doom onExit={() => setIsDoomActive(false)} />
-      </div>
-    );
-  }
+
 
   if (isSnakeActive) {
     return (

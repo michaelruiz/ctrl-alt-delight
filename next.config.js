@@ -1,5 +1,8 @@
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
+
 module.exports = {
   reactStrictMode: true,
+  output: 'export',
   webpack: (config) => {
     config.experiments = {
       ...config.experiments,
@@ -8,8 +11,9 @@ module.exports = {
     };
     config.resolve.alias = {
       ...config.resolve.alias,
-      'js-dos': require.resolve('js-dos/dist/js-dos.js'),
+      'node:crypto': 'crypto-browserify',
     };
+    config.plugins.push(new NodePolyfillPlugin());
     return config;
   },
 };

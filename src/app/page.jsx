@@ -4,18 +4,15 @@ import './globals.css';
 import { useEffect, useState, useRef } from 'react';
 import { Button } from '../components/ui/Button';
 import Terminal from '../components/ui/Terminal';
-import { useSound } from 'use-sound'; // Add sound effect library
-import dynamic from 'next/dynamic';
-
-const Doom = dynamic(() => import('../components/ui/Doom'), { ssr: false });
+import { useSound } from 'use-sound'; 
 
 export default function Home() {
   const [logs, setLogs] = useState([]);
   const endRef = useRef(null);
   const timeoutsRef = useRef([]);
   const [terminalActive, setTerminalActive] = useState(false);
-  const [logsComplete, setLogsComplete] = useState(false); // New state to track log completion
-  const [playTypingSound] = useSound('/sounds/typing.mp3', { volume: 1.0 }); // Increased volume to maximum
+  const [logsComplete, setLogsComplete] = useState(false); 
+  const [playTypingSound] = useSound('/sounds/typing.mp3', { volume: 1.0 }); 
 
   useEffect(() => {
     const newLogs = [
@@ -25,26 +22,24 @@ export default function Home() {
       '> Deploying: Michael_Ruiz_Resume_2025.pdf'
     ];
 
-    // Schedule each log with a timeout
     newLogs.forEach((log, index) => {
       const id = setTimeout(() => {
         setLogs((prev) => {
-          if (!prev.includes(log)) { // Ensure the log is not already added
+          if (!prev.includes(log)) { 
             return [...prev, log];
           }
           return prev;
         });
-        console.log('Playing sound for log:', log); // Debug log to confirm sound trigger
-        playTypingSound(); // Play typing sound for each log
+        console.log('Playing sound for log:', log); 
+        playTypingSound(); 
         if (index === newLogs.length - 1) {
-          setLogsComplete(true); // Mark logs as complete after the last log
+          setLogsComplete(true); 
         }
       }, index * 1000);
       timeoutsRef.current.push(id);
     });
 
     return () => {
-      // Clear timeouts on unmount or StrictMode remount
       timeoutsRef.current.forEach((id) => clearTimeout(id));
       timeoutsRef.current = [];
     };
@@ -75,15 +70,14 @@ export default function Home() {
             type="button"
             onClick={handleEnterClick}
             className={`hover:glitch ${logsComplete ? '' : 'opacity-50 cursor-not-allowed animate-pulse'}`}
-            disabled={!logsComplete} // Disable button until logs are complete
-            aria-disabled={!logsComplete} // Accessibility improvement
-            title={!logsComplete ? 'Please wait for logs to finish loading' : ''} // Tooltip for disabled button
+            disabled={!logsComplete} 
+            aria-disabled={!logsComplete}
+            title={!logsComplete ? 'Please wait for logs to finish loading' : ''} 
           >
             Enter The Terminal
           </Button>
           <Button
             type="button"
-            onClick={() => window.location.reload()} // Reload the page
             className="hover:glitch bg-hot-magnetic text-black px-4 py-2 rounded-md shadow-md"
           >
             Reload
@@ -91,10 +85,6 @@ export default function Home() {
         </div>
       </div>
       {terminalActive && <Terminal onExit={() => setTerminalActive(false)} />}
-      <main>
-        <h1>Welcome to Ctrl-Alt-Delight</h1>
-        <Doom />
-      </main>
     </>
   );
 }
