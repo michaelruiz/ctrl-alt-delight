@@ -208,16 +208,14 @@ const SnakeGame = ({ onExit }) => {
                   height: '20px',
                   backgroundColor: isSnake
                     ? 'yellow' 
-                    : isFood
-                    ? 'white'
                     : isWall
                     ? 'pink' 
-                    : 'blue',
+                    : 'blue', // Removed background for food
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
                   fontFamily: 'Courier New, monospace',
-                  color: 'black',
+                  color: isFood ? 'white' : 'black', // Food numbers will still be visible
                 }}
               >
                 {isFood ? foodValue : ''}
