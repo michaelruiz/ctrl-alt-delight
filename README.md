@@ -1,7 +1,7 @@
 ﻿# ctrl-alt-delight
 
 ## Overview
-ctrl-alt-delight is a web-based application I built that brings retro computing experiences to modern browsers. It's purpose is to serve up my resume in a fun style that showcases my abilites as a software engineer. 
+ctrl-alt-delight is a Next.js web-based application I built that brings retro computing experiences to modern browsers. It's purpose is to serve up my resume in a fun style that showcases my abilites as a software engineer. 
 
 ## Demos
 - [www.michaelruiz.dev](https://www.michaelruiz.dev) 
@@ -9,8 +9,8 @@ ctrl-alt-delight is a web-based application I built that brings retro computing 
 
 ## Features
 - **Terminal Emulator**: A fully functional terminal interface with sound effects.
-- **DOOM Integration**: Play classic DOOM games using the `js-dos` library.
-- **Responsive Design**: Built with modern web technologies for a seamless experience across devices.
+- **Nibbles Integration**: Play the classic game NIBBLES.
+- **Responsive Design**: Built with Next.js for a seamless experience across devices.
 
 ## Project Structure
 ```
@@ -19,10 +19,6 @@ package.json
 postcss.config.js
 README.md
 tailwind.config.js
-public/
-  doom/
-    DOOM.WAD
-    DOOM2.WAD
   sounds/
     typing.mp3
 src/
@@ -33,7 +29,7 @@ src/
   components/
     ui/
       Button.jsx
-      Doom.jsx
+      SnakeGame.jsx
       Terminal.jsx
 ```
 
