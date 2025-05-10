@@ -58,7 +58,6 @@ src/
    ```
 
 ## File Details
-- **public/doom/**: Contains the WAD files for DOOM and DOOM II.
 - **public/sounds/**: Includes sound effects like typing sounds for the terminal.
 - **src/components/ui/**: Contains React components for the UI, including the terminal and DOOM player.
 - **src/app/**: Application-level files, including global styles and layout.
@@ -67,7 +66,6 @@ src/
 - **Next.js**: Framework for server-side rendering and static site generation.
 - **React**: Library for building user interfaces.
 - **Tailwind CSS**: Utility-first CSS framework for styling.
-- **js-dos**: Library for running DOS programs in the browser.
 
 ## Contributing
 Contributions are welcome! Please fork the repository and submit a pull request.
