@@ -24,17 +24,23 @@ const SnakeGame: React.FC<SnakeGameProps> = ({ onExit }) => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      e.preventDefault(); // Prevent default behavior for WASD keys
+
       switch (e.key) {
         case 'ArrowUp':
+        case 'w':
           if (direction !== 'DOWN') setDirection('UP');
           break;
         case 'ArrowDown':
+        case 's':
           if (direction !== 'UP') setDirection('DOWN');
           break;
         case 'ArrowLeft':
+        case 'a':
           if (direction !== 'RIGHT') setDirection('LEFT');
           break;
         case 'ArrowRight':
+        case 'd':
           if (direction !== 'LEFT') setDirection('RIGHT');
           break;
         default:

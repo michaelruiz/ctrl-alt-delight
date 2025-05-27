@@ -4,15 +4,20 @@ import './globals.css';
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { Button } from '@/components/ui/Button';
 import Terminal from '@/components/ui/Terminal';
+import VirtualOS from '@/components/ui/VirtualOS';
 import { INITIAL_LOGS } from '@/constants/logs';
 import { useTypingSound } from '@/lib/hooks/useTypingSound';
 import { Log } from '@/types';
 
 export default function Home() {
   const [showTerminal, setShowTerminal] = useState(false);
+  const [showVirtualOS, setShowVirtualOS] = useState(false);
   const [logs, setLogs] = useState<Log[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLogsComplete, setIsLogsComplete] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [showLoadingIndicator, setShowLoadingIndicator] = useState(false);
   const logContainerRef = useRef<HTMLDivElement>(null);
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
   const { playTypingSound, stopTypingSound } = useTypingSound();
@@ -43,6 +48,7 @@ export default function Home() {
     const addNextLog = () => {
       if (!isMounted || currentIndex >= INITIAL_LOGS.length) {
         setIsLoading(false);
+        setIsLogsComplete(true);
         stopTypingSound();
         return;
       }
@@ -56,12 +62,10 @@ export default function Home() {
       playTypingSound();
       currentIndex++;
 
-      // Add a delay between logs
       const timeoutId = setTimeout(addNextLog, 800);
       timeoutsRef.current.push(timeoutId);
     };
 
-    // Add initial delay before starting
     const initialTimeoutId = setTimeout(addNextLog, 500);
     timeoutsRef.current.push(initialTimeoutId);
 
@@ -78,38 +82,48 @@ export default function Home() {
     return cleanup;
   }, [startLogSequence]);
 
-  // Scroll after each log is added
   useEffect(() => {
     if (logs.length > 0) {
       scrollToBottom();
     }
   }, [logs, scrollToBottom]);
 
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
+
   const handleEnterClick = () => {
-    setShowTerminal(true);
+    setShowLoadingIndicator(true);
+    setTimeout(() => {
+      setShowLoadingIndicator(false);
+      setShowTerminal(true);
+    }, 800);
   };
 
   const handleReload = () => {
-    // Clear all timeouts
     timeoutsRef.current.forEach(id => clearTimeout(id));
     timeoutsRef.current = [];
     stopTypingSound();
 
-    // Reset states
+    setShowLoadingIndicator(true);
     setLogs([]);
-    setIsLoading(true);
-
-    // Start the sequence again
-    const cleanup = startLogSequence();
-    return cleanup;
+    
+    setTimeout(() => {
+      setShowLoadingIndicator(false);
+      setIsLoading(true);
+      setIsLogsComplete(false);
+      
+      const cleanup = startLogSequence();
+      return cleanup;
+    }, 600);
   };
 
   if (error) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-red-400 font-mono p-6 flex flex-col items-center">
+      <main className={`min-h-screen ${theme === 'dark' ? 'bg-gradient-to-b from-black to-gray-900' : 'bg-gradient-to-b from-gray-100 to-white'} text-red-500 font-mono p-6 flex flex-col items-center transition-colors duration-300`}>
         <h1 className="text-4xl mb-8">Error</h1>
         <p className="mb-4">{error}</p>
-        <Button onClick={handleReload} className="bg-red-500 text-white">
+        <Button onClick={handleReload} className="bg-red-500 text-white hover:bg-red-600">
           Try Again
         </Button>
       </main>
@@ -117,31 +131,52 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-black to-gray-900 text-white">
+    <main className={`min-h-screen ${theme === 'dark' ? 'bg-gradient-to-b from-black to-gray-900 text-white' : 'bg-gradient-to-b from-gray-100 to-white text-gray-800'} transition-colors duration-300`}>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl text-hot-magnetic mb-8 animate-pulse text-center">CTRL + ALT + DELIGHT</h1>
+        <div className="flex justify-end mb-4">
+          <Button 
+            onClick={toggleTheme} 
+            className={`${theme === 'dark' ? 'bg-gray-700 text-yellow-300' : 'bg-blue-500 text-white'} px-3 py-1 rounded-full`}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </Button>
+        </div>
+        
+        <h1 className={`text-5xl ${theme === 'dark' ? 'text-hot-magnetic' : 'text-blue-600'} mb-8 animate-pulse text-center font-bold tracking-wider`}>
+          CTRL + ALT + DELIGHT
+        </h1>
+        
         <div className="max-w-4xl mx-auto">
           <div 
             ref={logContainerRef}
-            className="bg-gray-900 rounded-lg p-6 h-[60vh] overflow-y-auto font-mono text-sm"
+            className={`${theme === 'dark' ? 'bg-gray-900 text-green-400' : 'bg-white text-gray-800 border border-gray-300'} rounded-lg p-6 h-[60vh] overflow-y-auto font-mono text-sm shadow-lg transition-colors duration-300`}
           >
-            {isLoading && logs.length === 0 ? (
-              <div className="text-green-400 animate-pulse">Initializing...</div>
+            {showLoadingIndicator ? (
+              <div className="flex justify-center items-center h-full">
+                <div className="loader"></div>
+              </div>
+            ) : isLoading && logs.length === 0 ? (
+              <div className={`${theme === 'dark' ? 'text-green-400' : 'text-blue-500'} animate-pulse`}>Initializing...</div>
             ) : (
               renderedLogs
             )}
           </div>
 
           <div className="mt-8 flex justify-center space-x-4">
-            <button
+            <Button
               onClick={handleEnterClick}
-              className="bg-green-500 hover:bg-green-600 text-black font-bold py-2 px-4 rounded transition-colors"
+              className={`${isLogsComplete ? 
+                (theme === 'dark' ? 'bg-green-500 hover:bg-green-600 text-black' : 'bg-blue-500 hover:bg-blue-600 text-white') : 
+                'bg-gray-400 text-gray-700 cursor-not-allowed'} 
+                font-bold py-2 px-6 rounded-md transition-colors shadow-md transform hover:scale-105 active:scale-95`}
+              disabled={!isLogsComplete}
             >
-              Enter the Terminal
-            </button>
+              {isLogsComplete ? 'Enter the Terminal' : 'Loading...'}
+            </Button>
             <Button
               onClick={handleReload}
-              className="bg-hot-magnetic hover:bg-hot-magnetic/90 text-black font-bold py-2 px-4 rounded transition-colors"
+              className={`${theme === 'dark' ? 'bg-hot-magnetic hover:bg-hot-magnetic/90 text-black' : 'bg-purple-500 hover:bg-purple-600 text-white'} 
+                font-bold py-2 px-6 rounded-md transition-colors shadow-md transform hover:scale-105 active:scale-95`}
             >
               Replay
             </Button>
@@ -149,8 +184,15 @@ export default function Home() {
         </div>
       </div>
 
-      {showTerminal && (
-        <Terminal onExit={() => setShowTerminal(false)} />
+      {showVirtualOS && (
+        <VirtualOS onExit={() => setShowVirtualOS(false)} />
+      )}
+      {showTerminal && !showVirtualOS && (
+        <Terminal 
+          onExit={() => setShowTerminal(false)} 
+          theme={theme}
+          onShowVirtualOS={() => setShowVirtualOS(true)}
+        />
       )}
     </main>
   );

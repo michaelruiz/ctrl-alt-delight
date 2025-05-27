@@ -7,11 +7,11 @@ export const INITIAL_LOGS: Omit<Log, 'timestamp'>[] = [
   },
   {
     id: 'boot',
-    message: 'Loading core modules...'
+    message: 'Loading michaelruiz.exe...'
   },
   {
     id: 'connect',
-    message: 'Establishing secure connection...'
+    message: 'Establishing secure connection to server...'
   },
   {
     id: 'welcome',
@@ -19,6 +19,6 @@ export const INITIAL_LOGS: Omit<Log, 'timestamp'>[] = [
   },
   {
     id: 'ready',
-    message: 'Terminal ready for input'
+    message: 'Terminal is ready'
   }
 ]; 

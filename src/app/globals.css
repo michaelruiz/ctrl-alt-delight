@@ -7,9 +7,9 @@
   }
 
 input {
-  caret-color: #ff69b4; /* Pink color for the cursor */
-  caret-width: 3px; /* Make the cursor thicker/wider */
-  animation: none; /* Remove blinking effect from the text */
+  caret-color: #ff69b4; 
+  caret-width: 3px; 
+  animation: none; 
 }
 
 @keyframes blink {
@@ -51,4 +51,30 @@ input {
 
 .animate-fade-in {
   animation: fadeIn 0.5s ease-in forwards;
+}
+
+/* Custom loader animation */
+.loader {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #ff69b4;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Button hover effects */
+button:hover, .button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:active, .button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

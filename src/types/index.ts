@@ -10,6 +10,7 @@ export interface ButtonProps {
 
 export interface TerminalProps {
   onExit: () => void;
+  theme?: 'dark' | 'light';
 }
 
 export interface TerminalCommand {
