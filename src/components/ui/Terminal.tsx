@@ -348,6 +348,16 @@ const Terminal: React.FC<TerminalPropsWithVirtualOS> = ({ onExit, theme = 'dark'
           setShowVirtualOS(true);
         }
       }
+    },
+    christmas: {
+      name: 'christmas',
+      description: 'Open the Christmas After Hours project',
+      execute: () => {
+        typeLines(['Opening Christmas After Hours...']);
+        if (typeof window !== 'undefined') {
+          window.open('/christmas', '_blank');
+        }
+      }
     }
   };
 
